@@ -233,7 +233,7 @@ class ProxyList
      */
         public function get($rawProxies = null, $responseCode = null)
     {
-        if (empty($this->data) || empty($this->info)) {
+        if (!empty($rawProxies) && !empty($responseCode)) {
             $this->data = @$rawProxies;
             $this->info['http_code'] = @$responseCode;
         }
