@@ -131,4 +131,4 @@ $params array example with comments:
 >        array('o', 0), // Order: 0 - ASC, 1 - DESC
 >        array('pp', 3), //Per page: 0 - 10, 1 - 25, 2 - 50, 3 - 100
 >        array('sortBy', 'date') //Sort by: "date" - Date tested, "response_time" - Response time, "connection_time" - Connection time, "country" - Country A-Z
->    );
+>        );
