@@ -21,8 +21,6 @@
 require_once 'proxylist.class.php';
 
 $list = new ProxyList();
-$raw = $list->get_raw();
-
 $obj = $list->get();
 
 ?>
@@ -30,11 +28,23 @@ $obj = $list->get();
 <html>
 <head>
     <title>Proxy List</title>
+    <style>
+        body {
+            text-align: center
+        }
+    </style>
 </head>
 <body>
     <h3>Proxy List</h3>
-    <pre>
-<?php var_dump($obj); ?>
-    </pre>
+    <div id="proxyList">
+        <br />
+<?php
+$proxyList = '';
+foreach ($obj as $prxobj) {
+    $proxyList .= $prxobj['ip'] . ':' . $prxobj['port'] . '<br />';
+}
+echo trim($proxyList);
+ ?>
+    </div>
 </body>
 </html>
