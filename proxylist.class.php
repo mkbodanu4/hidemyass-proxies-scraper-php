@@ -231,8 +231,13 @@ class ProxyList
      * Get parsed data as object
      * @return bool|object
      */
-    public function get()
+        public function get($rawProxies = null, $responseCode = null)
     {
+        if (!empty($rawProxies) && !empty($responseCode)) {
+            $this->data = @$rawProxies;
+            $this->info['http_code'] = @$responseCode;
+        }
+        
         if(!($this->data && $this->info)) {
             $this->get_raw();
         }
