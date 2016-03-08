@@ -139,6 +139,16 @@ class ProxyList
         }
     }
 
+    private function removeSpaces($string)
+    {
+        $nospacestring = @str_replace(' ', '', str_replace(array(
+            "\r\n",
+            "\r",
+            "\n"
+        ) , "", preg_replace("/[\\n\\r]+/", "", $string))); // Fix url new line...
+        return $nospacestring;
+    }
+
     /**
      * Get error string
      */
@@ -151,8 +161,14 @@ class ProxyList
         return $this->base;
     }
 
-    public function get_params() {
-        return $this->params;
+    public function get_params($raw = false) {
+        $params = $this->params;
+
+        $rawParams = '';
+        for ($i = 0; $i < count($params); $i++) if (is_array($params[$i])) $rawParams[$i] = implode('=', $params[$i]); else break;
+        $rawParams = $this->removeSpaces(str_replace('[]', '%5B%5D', implode('&', $rawParams)));
+
+        return (@$raw) ? $rawParams : $params;
     }
 
 
