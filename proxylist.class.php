@@ -164,8 +164,8 @@ class ProxyList
     public function get_params($raw = false) {
         $params = $this->params;
 
-        $rawParams = '';
-        for ($i = 0; $i < count($params); $i++) if (is_array($params[$i])) $rawParams[$i] = implode('=', $params[$i]); else break;
+        $rawParams = $params;
+        for ($i = 0; $i < count($rawParams); $i++) if (is_array($rawParams[$i])) $rawParams[$i] = implode('=', $rawParams[$i]); else break;
         $rawParams = $this->removeSpaces(str_replace('[]', '%5B%5D', implode('&', $rawParams)));
 
         return (@$raw) ? $rawParams : $params;
