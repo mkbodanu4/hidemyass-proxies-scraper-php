@@ -205,7 +205,7 @@ class ProxyList
         curl_setopt($ch, CURLINFO_HEADER_OUT, $header);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
             'DNT: 1',
-            'Referer: ' . $url,
+            'Referer: ' . parse_url($url, PHP_URL_HOST),
             'Content-Type: application/x-www-form-urlencoded; charset=UTF-8',
             'X-Requested-With: XMLHttpRequest',
             'User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.116 Safari/537.36',
@@ -282,6 +282,7 @@ class ProxyList
             //if json parsed - read needed data and prepare object with proxies list
             if ($json) {
                 $table = $json->table;
+                $listUrl = $this->base . $json->url;
 
                 //get all proxies rows
                 $rows = array();
@@ -331,6 +332,7 @@ class ProxyList
                         }
                     }
 
+                    $data['listUrl'] = $listUrl;
                     return $data;
                 } else {
                     $this->error = "Empty response";
