@@ -41,9 +41,11 @@ $obj = $list->get();
 <?php
 $proxyList = '';
 foreach ($obj as $prxobj) {
+    if (!empty($prxobj['ip'])) {
     $proxyList .= $prxobj['ip'] . ':' . $prxobj['port'] . '<br />';
+    }
 }
-echo trim($proxyList);
+echo trim($proxyList) . PHP_EOL . PHP_EOL 'URL: ' . $obj['listUrl'];
  ?>
     </div>
 </body>
