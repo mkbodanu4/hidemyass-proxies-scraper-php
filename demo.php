@@ -45,7 +45,7 @@ foreach ($obj as $prxobj) {
     $proxyList .= $prxobj['ip'] . ':' . $prxobj['port'] . '<br />';
     }
 }
-echo trim($proxyList) . PHP_EOL . PHP_EOL 'URL: ' . $obj['listUrl'];
+echo trim($proxyList) . PHP_EOL . PHP_EOL . 'URL: ' . $obj['listUrl'];
  ?>
     </div>
 </body>
