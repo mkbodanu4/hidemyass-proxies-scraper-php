@@ -86,20 +86,20 @@ class ProxyList
         array('c[]', 'Viet+Nam'),
         array('allPorts', '1'),
         array('p', ''), //exclude this ports, comma separated string, if none - empty string
-        // array('pr[]', 0), //Protocol - HTTP [remove any of lines below to exclude]
-        // array('pr[]', 1), //Protocol - HTTPS
+        array('pr[]', 0), //Protocol - HTTP [remove any of lines below to exclude]
+        array('pr[]', 1), //Protocol - HTTPS
         array('pr[]', 2), //Protocol - SOCKS4/SOCKS5
-        // array('a[]', 0), //Anonymity Level - None [remove any of lines below to exclude]
-        // array('a[]', 1), //Anonymity Level - Low
-        // array('a[]', 2), //Anonymity Level - Medium
-        // array('a[]', 3), //Anonymity Level - High
+        array('a[]', 0), //Anonymity Level - None [remove any of lines below to exclude]
+        array('a[]', 1), //Anonymity Level - Low
+        array('a[]', 2), //Anonymity Level - Medium
+        array('a[]', 3), //Anonymity Level - High
         array('a[]', 4), //Anonymity Level - High + KA
-        //array('pl', 'off'), //Planetlab include: "on"  Otherwise comment out
-        // array('sp[]', 1), //Speed - slow [remove any of lines below to exclude]
-        // array('sp[]', 2), //Speed - medium
+        array('pl', 'off'), //Planetlab include: "on"  Otherwise comment out
+        array('sp[]', 1), //Speed - slow [remove any of lines below to exclude]
+        array('sp[]', 2), //Speed - medium
         array('sp[]', 3), //Speed - fast
-        // array('ct[]', 1), //Connection time - slow [remove any of lines below to exclude]
-        // array('ct[]', 2), //Connection time - medium
+        array('ct[]', 1), //Connection time - slow [remove any of lines below to exclude]
+        array('ct[]', 2), //Connection time - medium
         array('ct[]', 3), //Connection time - fast
         array('s', 0), //Sort by: 0 - Date tested, 1 - Response time, 2 - Connection time, 3 - Country A-Z
         array('o', 0), // Order: 0 - ASC, 1 - DESC
