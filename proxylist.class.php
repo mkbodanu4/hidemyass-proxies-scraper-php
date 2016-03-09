@@ -253,8 +253,10 @@ class ProxyList
         }
     }
 
-    /**
+        /**
      * Get parsed data as object
+     * @param null $rawProxies
+     * @param null $responseCode
      * @return bool|object
      */
     public function get($rawProxies = null, $responseCode = null)
@@ -348,6 +350,12 @@ class ProxyList
         }
     }
 
+    /**
+     * Parse raw list
+     * @param $rawProxies
+     * @param $responseCode
+     * @return bool|object
+     */
     public function parse($rawProxies, $responseCode) {
         return $this->get($rawProxies, $responseCode);
     }
