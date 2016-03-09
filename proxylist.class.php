@@ -33,59 +33,59 @@ class ProxyList
     private $base = "http://proxylist.hidemyass.com/";
     private $params = array(
         array('ac', 'on'), //all countries [remove line below to exclude. don't forget to remove this line if at least one country excluded]
-        array('c[]', 'Mexico'),
-        array('c[]', 'Brazil'),
-        array('c[]', 'China'),
-        array('c[]', 'United+States'),
-        array('c[]', 'Korea,+Republic+of'),
-        array('c[]', 'Trinidad+and+Tobago'),
-        array('c[]', 'Russian+Federation'),
-        array('c[]', 'Hong+Kong'),
-        array('c[]', 'Venezuela'),
-        array('c[]', 'Netherlands'),
-        array('c[]', 'France'),
-        array('c[]', 'Indonesia'),
-        array('c[]', 'Germany'),
-        array('c[]', 'Viet+Nam'),
+        array('c[]', 'Angola'),
+        array('c[]', 'Argentina'),
+        array('c[]', 'Armenia'),
         array('c[]', 'Austria'),
-        array('c[]', 'United+Kingdom'),
-        array('c[]', 'Switzerland'),
-        array('c[]', 'Puerto+Rico'),
-        array('c[]', 'Kazakhstan'),
-        array('c[]', 'Taiwan'),
+        array('c[]', 'Bangladesh'),
+        array('c[]', 'Belgium'),
+        array('c[]', 'Brazil'),
+        array('c[]', 'Canada'),
         array('c[]', 'Chile'),
+        array('c[]', 'China'),
+        array('c[]', 'Colombia'),
+        array('c[]', 'Czech+Republic'),
+        array('c[]', 'Ecuador'),
+        array('c[]', 'France'),
+        array('c[]', 'Germany'),
+        array('c[]', 'Hong+Kong'),
         array('c[]', 'India'),
+        array('c[]', 'Indonesia'),
+        array('c[]', 'Iran'),
+        array('c[]', 'Israel'),
+        array('c[]', 'Italy'),
+        array('c[]', 'Kenya'),
+        array('c[]', 'Korea,+Republic+of'),
+        array('c[]', 'Latvia'),
+        array('c[]', 'Malaysia'),
+        array('c[]', 'Mexico'),
+        array('c[]', 'Netherlands'),
+        array('c[]', 'Netherlands+Antilles'),
+        array('c[]', 'New+Zealand'),
+        array('c[]', 'Norway'),
+        array('c[]', 'Panama'),
+        array('c[]', 'Paraguay'),
+        array('c[]', 'Puerto+Rico'),
+        array('c[]', 'Reunion'),
+        array('c[]', 'Romania'),
+        array('c[]', 'Russian+Federation'),
+        array('c[]', 'Saudi+Arabia'),
+        array('c[]', 'Slovenia'),
+        array('c[]', 'South+Africa'),
+        array('c[]', 'Spain'),
+        array('c[]', 'Sweden'),
+        array('c[]', 'Switzerland'),
         array('c[]', 'Taiwan'),
         array('c[]', 'Thailand'),
-        array('c[]', 'Europe'),
+        array('c[]', 'Trinidad+and+Tobago'),
         array('c[]', 'Turkey'),
-        array('c[]', 'Norway'),
-        array('c[]', 'Ecuador'),
-        array('c[]', 'Malaysia'),
-        array('c[]', 'Japan'),
-        array('c[]', 'Moldova,+Republic+of'),
-        array('c[]', 'New+Zealand'),
-        array('c[]', 'Nigeria'),
-        array('c[]', 'Armenia'),
-        array('c[]', 'Belarus'),
-        array('c[]', 'Macedonia'),
-        array('c[]', 'Bulgaria'),
-        array('c[]', 'Colombia'),
-        array('c[]', 'Argentina'),
-        array('c[]', 'Denmark'),
-        array('c[]', 'Croatia'),
-        array('c[]', 'Sweden'),
-        array('c[]', 'Slovakia'),
-        array('c[]', 'Panama'),
-        array('c[]', 'Israel'),
-        array('c[]', 'Egypt'),
-        array('c[]', 'Czech+Republic'),
-        array('c[]', 'Paraguay'),
-        array('c[]', 'Bangladesh'),
-        array('c[]', 'South+Africa'),
-        array('c[]', 'Kenya'),
-        array('c[]', 'Reunion'),
-        array('p', '80,22'), //exclude this ports, comma separated string, if none - empty string
+        array('c[]', 'United+Arab+Emirates'),
+        array('c[]', 'United+Kingdom'),
+        array('c[]', 'United+States'),
+        array('c[]', 'Venezuela'),
+        array('c[]', 'Viet+Nam'),
+        array('allPorts', '1'),
+        array('p', ''), //exclude this ports, comma separated string, if none - empty string
         array('pr[]', 0), //Protocol - HTTP [remove any of lines below to exclude]
         array('pr[]', 1), //Protocol - HTTPS
         array('pr[]', 2), //Protocol - SOCKS4/SOCKS5
@@ -94,7 +94,7 @@ class ProxyList
         array('a[]', 2), //Anonymity Level - Medium
         array('a[]', 3), //Anonymity Level - High
         array('a[]', 4), //Anonymity Level - High + KA
-        array('pl', 'on'), //Planetlab include: "on"/"off"
+        array('pl', 'off'), //Planetlab include: "on"  Otherwise comment out
         array('sp[]', 1), //Speed - slow [remove any of lines below to exclude]
         array('sp[]', 2), //Speed - medium
         array('sp[]', 3), //Speed - fast
@@ -139,12 +139,36 @@ class ProxyList
         }
     }
 
+    private function removeSpaces($string)
+    {
+        $nospacestring = @str_replace(' ', '', str_replace(array(
+            "\r\n",
+            "\r",
+            "\n"
+        ) , "", preg_replace("/[\\n\\r]+/", "", $string))); // Fix url new line...
+        return $nospacestring;
+    }
+
     /**
      * Get error string
      */
     public function get_error()
     {
         return $this->error;
+    }
+
+    public function get_base() {
+        return $this->base;
+    }
+
+    public function get_params($raw = false) {
+        $params = $this->params;
+
+        $rawParams = $params;
+        for ($i = 0; $i < count($rawParams); $i++) if (is_array($rawParams[$i])) $rawParams[$i] = implode('=', $rawParams[$i]); else break;
+        $rawParams = $this->removeSpaces(str_replace('[]', '%5B%5D', implode('&', $rawParams)));
+
+        return (@$raw) ? $rawParams : $params;
     }
 
 
@@ -169,22 +193,24 @@ class ProxyList
         if ($post && is_array($post)) {
             curl_setopt($ch, CURLOPT_POST, true);
             for ($i = 0; $i < count($post); $i++) if (is_array($post[$i])) $post[$i] = implode('=', $post[$i]); else break;
-            curl_setopt($ch, CURLOPT_POSTFIELDS, implode('&', $post));
+            $post = removeSpaces(str_replace('[]', '%5B%5D', implode('&', $post)));
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
         }
         if ($cookies) {
             curl_setopt($ch, CURLOPT_COOKIE, $cookies);
             curl_setopt($ch, CURLOPT_COOKIEFILE, $cookies);
             curl_setopt($ch, CURLOPT_COOKIEJAR, $cookies);
         }
-        curl_setopt($ch, CURLOPT_USERAGENT, '"Mozilla/5.0 (X11; Linux x86_64; rv:46.0) Gecko/20100101 Firefox/46.0"');
         curl_setopt($ch, CURLOPT_HEADER, $header);
         curl_setopt($ch, CURLINFO_HEADER_OUT, $header);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
             'DNT: 1',
-            'Referer: ' . $referer,
+            'Referer: ' . parse_url($url, PHP_URL_HOST),
             'Content-Type: application/x-www-form-urlencoded; charset=UTF-8',
             'X-Requested-With: XMLHttpRequest',
-            'Connection: keep-alive'
+            'User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.116 Safari/537.36',
+            'Connection: keep-alive',
+            'Content-Length: ' . strlen($post)
         ));
 
         try {
@@ -227,18 +253,25 @@ class ProxyList
         }
     }
 
-    /**
+        /**
      * Get parsed data as object
+     * @param null $rawProxies
+     * @param null $responseCode
      * @return bool|object
      */
-    public function get()
+    public function get($rawProxies = null, $responseCode = null)
     {
+        if (!empty($rawProxies) && !empty($responseCode)) {
+            $this->data = @$rawProxies;
+            $this->info['http_code'] = @$responseCode;
+        }
+
         if(!($this->data && $this->info)) {
             $this->get_raw();
         }
 
         //if data available and HTTP code of result = 200 (success)
-        if ($this->data && $this->info && $this->info['http_code'] == 200) {
+        if (($this->data && $this->info && $this->info['http_code'] == 200)) {
             $json = null;
 
             //try to parse json
@@ -251,6 +284,7 @@ class ProxyList
             //if json parsed - read needed data and prepare object with proxies list
             if ($json) {
                 $table = $json->table;
+                $listUrl = $this->base . $json->url;
 
                 //get all proxies rows
                 $rows = array();
@@ -300,6 +334,7 @@ class ProxyList
                         }
                     }
 
+                    $data['listUrl'] = $listUrl;
                     return $data;
                 } else {
                     $this->error = "Empty response";
@@ -313,6 +348,16 @@ class ProxyList
             $this->error = "No response, please check your server";
             return false;
         }
+    }
+
+    /**
+     * Parse raw list
+     * @param $rawProxies
+     * @param $responseCode
+     * @return bool|object
+     */
+    public function parse($rawProxies, $responseCode) {
+        return $this->get($rawProxies, $responseCode);
     }
 
 }
