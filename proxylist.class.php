@@ -178,12 +178,9 @@ class ProxyList
      * @param array $info request details
      * @param array|bool $post post data or false
      * @param string|bool $cookies cookies filename
-     * @param string|bool $referer referer header value
-     * @param bool $allow_redirect allow redirects
-     * @param bool $header return headers
      * @return bool|mixed result
      */
-    private function get_contents($url, &$info, $post = false, $cookies = false, $referer = false, $allow_redirect = false, $header = false)
+    private function get_contents($url, &$info, $post = false, $cookies = false)
     {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -193,7 +190,7 @@ class ProxyList
         if ($post && is_array($post)) {
             curl_setopt($ch, CURLOPT_POST, true);
             for ($i = 0; $i < count($post); $i++) if (is_array($post[$i])) $post[$i] = implode('=', $post[$i]); else break;
-            $post = removeSpaces(str_replace('[]', '%5B%5D', implode('&', $post)));
+            $post = $this->removeSpaces(str_replace('[]', '%5B%5D', implode('&', $post)));
             curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
         }
         if ($cookies) {
@@ -201,8 +198,8 @@ class ProxyList
             curl_setopt($ch, CURLOPT_COOKIEFILE, $cookies);
             curl_setopt($ch, CURLOPT_COOKIEJAR, $cookies);
         }
-        curl_setopt($ch, CURLOPT_HEADER, $header);
-        curl_setopt($ch, CURLINFO_HEADER_OUT, $header);
+        curl_setopt($ch, CURLOPT_HEADER, false);
+        curl_setopt($ch, CURLINFO_HEADER_OUT, false);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
             'DNT: 1',
             'Referer: ' . parse_url($url, PHP_URL_HOST),
@@ -226,10 +223,10 @@ class ProxyList
         */
         if ($ch) curl_close($ch);
 
-        if ($allow_redirect && ($info['http_code'] == 301 || $info['http_code'] == 302)) {
+        if ($info['http_code'] == 301 || $info['http_code'] == 302) {
             $url = $info['redirect_url'];
             $url_parsed = parse_url($url);
-            return (isset($url_parsed)) ? get_contents($url, $post, $cookies) : false;
+            return (isset($url_parsed)) ? $this->get_contents($url, $info, $post, $cookies) : false;
         }
 
         return $output;
@@ -243,7 +240,7 @@ class ProxyList
     {
         $this->init_cookies();
         try {
-            $this->data = $this->get_contents($this->base, $this->info, $this->params, $this->cookies, $this->base);
+            $this->data = $this->get_contents($this->base, $this->info, $this->params, $this->cookies);
             $this->close_cookies();
             return $this->data;
         } catch (Exception $e) {
@@ -257,7 +254,7 @@ class ProxyList
      * Get parsed data as object
      * @param null $rawProxies
      * @param null $responseCode
-     * @return bool|object
+     * @return bool|object|array
      */
     public function get($rawProxies = null, $responseCode = null)
     {
