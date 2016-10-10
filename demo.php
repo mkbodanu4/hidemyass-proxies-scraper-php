@@ -35,18 +35,24 @@ $obj = $list->get();
     </style>
 </head>
 <body>
-    <h3>Proxy List</h3>
-    <div id="proxyList">
-        <br />
-<?php
-$proxyList = '';
-foreach ($obj as $prxobj) {
-    if (!empty($prxobj['ip'])) {
-    $proxyList .= $prxobj['ip'] . ':' . $prxobj['port'] . '<br />';
+<h3>Proxy List</h3>
+<div id="proxyList">
+    <br />
+    <?php
+
+    if($obj) {
+        $proxyList = '';
+        foreach ($obj as $prxobj) {
+            if (!empty($prxobj['ip'])) {
+                $proxyList .= $prxobj['ip'] . ':' . $prxobj['port'] . '<br />';
+            }
+        }
+        echo trim($proxyList) . '<br /><br />' . 'URL: ' . $obj['listUrl'];
+    } else {
+        echo "Error: " . $list->get_error();
     }
-}
-    echo trim($proxyList) . '<br /><br />' . 'URL: ' . $obj['listUrl'];
- ?>
-    </div>
+
+    ?>
+</div>
 </body>
 </html>

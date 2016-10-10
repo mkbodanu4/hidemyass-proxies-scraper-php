@@ -210,17 +210,8 @@ class ProxyList
             'Content-Length: ' . strlen($post)
         ));
 
-        try {
-            $output = curl_exec($ch);
-            $info = curl_getinfo($ch);
-        } catch (Exception $ex) {
-            die($ex->getMessage());
-        }
-        /* php 5.5 and above
-        finally {
-            curl_close($ch);
-        }
-        */
+        $output = curl_exec($ch);
+        $info = curl_getinfo($ch);
         if ($ch) curl_close($ch);
 
         if ($info['http_code'] == 301 || $info['http_code'] == 302) {
@@ -250,7 +241,7 @@ class ProxyList
         }
     }
 
-        /**
+    /**
      * Get parsed data as object
      * @param null $rawProxies
      * @param null $responseCode
