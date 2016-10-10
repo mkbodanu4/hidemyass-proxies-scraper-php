@@ -110,6 +110,7 @@ class ProxyList
     private $error = "";
     private $data = null;
     private $info = null;
+    private $errors_separator = "\r\n";
 
     public function __construct($params = false)
     {
@@ -125,7 +126,7 @@ class ProxyList
     {
         $this->cookies = tempnam ("/tmp", "CURLCOOKIE");
         if(!$this->cookies || !file_exists($this->cookies)) {
-            $this->error = "Can't create temporary cookies file";
+            $this->error .= "Can't create temporary cookies file" . $this->errors_separator;
         }
     }
 
@@ -139,28 +140,47 @@ class ProxyList
         }
     }
 
+    /**
+     * Remove all spaces from string
+     * @param string $string Input string
+     * @return string Output
+     */
     private function removeSpaces($string)
     {
-        $nospacestring = @str_replace(' ', '', str_replace(array(
+        return @str_replace(' ', '', str_replace(array(
             "\r\n",
             "\r",
             "\n"
         ) , "", preg_replace("/[\\n\\r]+/", "", $string))); // Fix url new line...
-        return $nospacestring;
     }
 
     /**
      * Get error string
+     * @return string
      */
     public function get_error()
     {
         return $this->error;
     }
 
+    public function set_error_separator($separator = "\r\n")
+    {
+        $this->errors_separator = $separator;
+    }
+
+    /**
+     * Get HMA base URL
+     * @return string
+     */
     public function get_base() {
         return $this->base;
     }
 
+    /**
+     * Process parameters
+     * @param bool|array $raw input parameters
+     * @return array|bool|string
+     */
     public function get_params($raw = false) {
         $params = $this->params;
 
@@ -211,6 +231,9 @@ class ProxyList
         ));
 
         $output = curl_exec($ch);
+        if(curl_error($ch)) {
+            $this->error .= curl_error($ch) . $this->errors_separator;
+        }
         $info = curl_getinfo($ch);
         if ($ch) curl_close($ch);
 
@@ -235,7 +258,7 @@ class ProxyList
             $this->close_cookies();
             return $this->data;
         } catch (Exception $e) {
-            $this->error .= $e->getMessage()."\r\n";
+            $this->error .= $e->getMessage() . $this->errors_separator;
             $this->close_cookies();
             return false;
         }
@@ -266,7 +289,7 @@ class ProxyList
             try {
                 $json = json_decode($this->data);
             } catch (Exception $e) {
-                $this->error .= $e->getMessage()."\r\n";
+                $this->error .= $e->getMessage() . $this->errors_separator;
             }
 
             //if json parsed - read needed data and prepare object with proxies list
@@ -325,15 +348,15 @@ class ProxyList
                     $data['listUrl'] = $listUrl;
                     return $data;
                 } else {
-                    $this->error = "Empty response";
+                    $this->error .= "Empty response" . $this->errors_separator;
                     return false;
                 }
             } else {
-                $this->error = "Can't decode JSON";
+                $this->error .= "Can't decode JSON" . $this->errors_separator;
                 return false;
             }
         } else {
-            $this->error = "No response, please check your server";
+            $this->error .= "No response, please check your server" . $this->errors_separator;
             return false;
         }
     }

@@ -21,6 +21,7 @@
 require_once 'proxylist.class.php';
 
 $list = new ProxyList();
+$list->set_error_separator("<br/>");
 $obj = $list->get();
 
 ?>
