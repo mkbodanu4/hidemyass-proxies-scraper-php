@@ -1,3 +1,10 @@
+**[SUSPENDED] This project is suspended as for now (07/02/2017) there is no Proxy List available at site.**
+==============================
+> Official note:
+>
+> ``This service has been suspended due changes in our infrastructure. But we'll be back with an even better version in a few months!``
+
+
 **HMA** Proxy List Scraper
 ===================
 Small PHP class for collecting fresh proxies from **HideMyAss** and filtering them based on ***Anonymity/Speed/Country/Sort***.
